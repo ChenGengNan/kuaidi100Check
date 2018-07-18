@@ -1,5 +1,5 @@
 # 快递查询小工具
-## jQuery +  node.js + 快递100Api
+## jQuery +  node.js（express） + 快递100Api
 ## 运行
   ### 前提：安装node环境
       执行  npm install 
