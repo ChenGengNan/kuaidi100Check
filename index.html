@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>快递查询小工具</title>
+    <script src="https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
+</head>
+<style>
+    body *{
+        font-family: '微软雅黑';
+    }
+    body{
+        margin: 0;
+        background-image: url("./background-image.jpg");
+        background-size:cover;
+        background-attachment:fixed;
+        height: 100%;
+        overflow: hidden;
+    }
+    .cont{
+        width: 800px;
+        height: 500px;
+        border: 1px solid #333;
+        margin: 80px auto;
+        background-color: deepskyblue;
+    }
+    .cont_tle{
+        text-align: center;
+    }
+    .form{
+        text-align: center;
+        height: 100px;
+    }
+    ul li{
+        list-style: none;
+        border: 1px solid #333;
+        margin: 8px 10px;
+        background-color:yellow;
+    }
+    .result{
+        height: 275px;
+        overflow-y: auto;
+    }
+    .span{
+        margin-left: 50px;
+    }
+    ::-webkit-scrollbar
+    {
+        width: 16px;
+        height: 16px;
+        background-color: #fff;
+        width: 5px;
+    }
+    ::-webkit-scrollbar-thumb
+    {
+        border-radius: 10px;
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+        background-color: #f8f8f8   ;
+    }
+    #search{
+        outline: none;
+    }
+</style>
+<body>
+    <div class="cont">
+        <div class="cont_tle">
+            <h3>物流查询小工具</h3>
+            <p>快捷/易用/方便</p>
+        </div>
+        <div class="form">
+            <select name="" id="select">
+                <option value="yuantong">圆通</option>
+                <option value="shentong">申通</option>
+                <option value="ems">EMS</option>
+                <option value="shunfeng">顺丰</option>
+                <option value="zhongtong">中通</option>
+                <option value="yunda">韵达</option>
+                <option value="tiantian">天天</option>
+                <option value="huitongkuaidi">汇通</option>
+                <option value="quanfengkuaidi">全峰</option>
+                <option value="debangkuaidi">德邦</option>
+                <option value="zhaijisong">宅急送</option>
+            </select>
+            <input type="text" placeholder="请输入订单号" id="search">
+            <input type="button" value="查询" id="searchs">
+        </div>
+        <span class="span">查询结果：</span><span id="search_result">暂无</span>
+        <div class="result">
+            <ul class="process">
+            </ul>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $("#searchs").click(function () {
+                $("ul li").remove();
+                //获取用户选择的快递类型
+                var type = $("#select").val();
+                //获取用户输入框的值
+                var postid = $("#search").val();
+                //通过ajax调用接口，吧返回值放在页面上面
+                var url = 'http://localhost:3000/query';
+                $.ajax({
+                    url:url,
+                    type:'get',
+                    data:{ type:type,postid:postid},
+                    success:function (data) {
+                        //把返回的json字符串转化成对象
+                       try{
+                           var obj = JSON.parse(data);
+                           $("#search_result").text(obj.message)
+                           //for循环把数据都取到
+                           for(var x=0;x<data.length;x++){
+                               //通过appen函数把数据放到页面中
+                               $("ul").append('<li>\n' +
+                                   '<p>' + obj.data[x].time + '</p>\n' +
+                                   '<p>'+ obj.data[x].context + '</p>\n' +
+                                   '</li>')
+                           }
+                       }
+                       catch(err){
+                           console.log(err);
+                       }
+                    }
+                })
+            });
+        })
+    </script>
+</body>
+
+</html>
